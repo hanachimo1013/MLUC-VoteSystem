@@ -63,8 +63,8 @@ class VoterAuthController extends Controller
             DB::table('voter_acct_models')->insert([
                 'idNum' => $data['idNum'],
                 'email' => $data['email'],
-                'fname' => DB::table('voter_models')->where('idNum', $data['idNum'])->value('fname'),
-                'lname' => DB::table('voter_models')->where('idNum', $data['idNum'])->value('lname'),
+                'fname' => $preRegVoter->fname,
+                'lname' => $preRegVoter->lname,
                 'college_init' => $data['college_init'],
                 'password' => bcrypt($data['password'])
             ]);
