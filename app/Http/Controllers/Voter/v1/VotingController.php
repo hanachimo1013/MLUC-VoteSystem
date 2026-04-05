@@ -56,18 +56,44 @@ class VotingController extends Controller
     {
         $data = $request->all();
 
-        if (!$data == null) {
-            foreach($data as $data1) {
-                DB::table('voting_results')->updateOrInsert([
-                    'voter_id' => Auth::id(),
-                    'position_id' => UtilityElection::getPositionInElections($data1),
-                    'candidate_id' => $data1,
-                    'election_id' => UtilityElection::getCurrentElections($data1)
-                ]);
+        if (!empty($data)) {
+            $voterId = Auth::id();
+
+            // Bulk fetch candidate details in a single query to avoid N+1 problem
+            $candidates = DB::table('candidate_models')
+                ->whereIn('id', $data)
+                ->get(['id', 'position_id', 'election_id'])
+                ->keyBy('id');
+
+            $votesToInsert = [];
+            foreach ($data as $candidateId) {
+                if (isset($candidates[$candidateId])) {
+                    $candidate = $candidates[$candidateId];
+                    $votesToInsert[] = [
+                        'voter_id' => $voterId,
+                        'position_id' => $candidate->position_id,
+                        'candidate_id' => $candidateId,
+                        'election_id' => $candidate->election_id,
+                        'isVoted' => 1,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
             }
-            return response([
-                'success' => 'Your vote has been casted. Please restart the page!'
-            ], 201);
+
+            if (!empty($votesToInsert)) {
+                // Use a transaction for data integrity and performance
+                DB::transaction(function () use ($votesToInsert) {
+                    // Using insertOrIgnore to avoid duplicate votes if the user refreshes
+                    // This assumes a unique constraint or primary key on (voter_id, position_id, candidate_id)
+                    // If no unique constraint exists, it will still be faster than updateOrInsert in a loop.
+                    DB::table('voting_results')->insertOrIgnore($votesToInsert);
+                });
+
+                return response([
+                    'success' => 'Your vote has been casted. Please restart the page!'
+                ], 201);
+            }
         }
 
         return response([
