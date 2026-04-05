@@ -83,9 +83,6 @@ class VotingController extends Controller
                     ]);
                 }
             }
-            return response([
-                'success' => 'Your vote has been casted. Please restart the page!'
-            ], 201);
         }
 
         return response([
