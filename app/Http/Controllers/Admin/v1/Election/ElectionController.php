@@ -16,7 +16,7 @@ class ElectionController extends Controller
     {
         $data = ElectionModel::all();
 
-        if (!$data == null) {
+        if ($data) {
             return response([
                 'success' => $data
             ], 200);
@@ -35,7 +35,7 @@ class ElectionController extends Controller
             'college_init' => ['required']
         ]);
 
-        if (!$data == null) {
+        if ($data) {
             try {
                 DB::table('election_models')->insert([
                     'elec_name' => $data['name'],
@@ -59,7 +59,7 @@ class ElectionController extends Controller
     {
         $data = $request->only('id');
 
-        if (!$data == null) {
+        if ($data) {
             try {
                 DB::table('election_models')
                     ->where('id', $data['id'])

@@ -18,7 +18,10 @@ class CreateVoterModelsTable extends Migration
             $table->integer('idNum');
             $table->string('fname');
             $table->string('lname');
-            $table->string('imageUrl');
+            $table->string('mname')->nullable();
+            $table->string('imageUrl')->nullable();
+            $table->string('password')->nullable();
+            $table->string('college_init')->nullable();
         });
     }
 

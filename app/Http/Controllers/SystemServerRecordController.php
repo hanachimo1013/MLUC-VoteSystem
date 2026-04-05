@@ -23,7 +23,7 @@ class SystemServerRecordController extends Controller
             'file'=>'required|max:5120'
         ]);
 
-        if(!$csvValidate==null){
+        if ($csvValidate){
             Excel::import(new VoterMgmtImport, $request->file('file'));
 
             $registeredVoters = DB::table('voter_models')->count();
@@ -53,7 +53,7 @@ class SystemServerRecordController extends Controller
 
         $eventTitle = DB::table('mstr_updts')->get();
 
-        if (!$eventTitle == null) {
+        if ($eventTitle) {
             return response([
                 'title' => $eventTitle
             ], 200);

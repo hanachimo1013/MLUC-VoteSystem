@@ -1,8 +1,8 @@
 import {createStore} from "vuex";
-import axiosClient from "../axios";
-import axiosOrigin from '../axiosSource';
-import axiosSanctum from '../sanctumAxios'
-import axiosClientVoter from "../axios2";
+import { axiosClient, axiosClientVoter, axiosOrigin, axiosSanctum } from "../axios";
+
+
+
 
 const adminModule = {
   state: {

@@ -15,12 +15,12 @@ class CreateVoterAcctModelsTable extends Migration
     {
         Schema::create('voter_acct_models', function (Blueprint $table) {
             $table->id();
-            $table->unique('idNum');
+            $table->integer('idNum')->unique();
             $table->string('fname');
             $table->string('lname');
             $table->string('email');
             $table->string('password');
-            $table->string('college');
+            $table->string('college_init');
             $table->timestamps();
         });
     }

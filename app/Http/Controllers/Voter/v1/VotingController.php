@@ -56,43 +56,32 @@ class VotingController extends Controller
     {
         $data = $request->all();
 
-        if (!empty($data)) {
-            $voterId = Auth::id();
+        if (!$data == null) {
+            $userId = Auth::id();
 
-            // Bulk fetch candidate details in a single query to avoid N+1 problem
+            // Bulk fetch candidate information with explicit joins to mirror UtilityElection logic precisely.
             $candidates = DB::table('candidate_models')
-                ->whereIn('id', $data)
-                ->get(['id', 'position_id', 'election_id'])
+                ->join('position_models', 'candidate_models.position_id', '=', 'position_models.id')
+                ->join('election_models', 'candidate_models.election_id', '=', 'election_models.id')
+                ->whereIn('candidate_models.id', $data)
+                ->select(
+                    'candidate_models.id',
+                    'position_models.id as position_id',
+                    'election_models.id as election_id'
+                )
+                ->get()
                 ->keyBy('id');
 
-            $votesToInsert = [];
-            foreach ($data as $candidateId) {
-                if (isset($candidates[$candidateId])) {
-                    $candidate = $candidates[$candidateId];
-                    $votesToInsert[] = [
-                        'voter_id' => $voterId,
+            foreach($data as $data1) {
+                if ($candidates->has($data1)) {
+                    $candidate = $candidates->get($data1);
+                    DB::table('voting_results')->updateOrInsert([
+                        'voter_id' => $userId,
                         'position_id' => $candidate->position_id,
-                        'candidate_id' => $candidateId,
-                        'election_id' => $candidate->election_id,
-                        'isVoted' => 1,
-                        'created_at' => now(),
-                        'updated_at' => now(),
-                    ];
+                        'candidate_id' => $data1,
+                        'election_id' => $candidate->election_id
+                    ]);
                 }
-            }
-
-            if (!empty($votesToInsert)) {
-                // Use a transaction for data integrity and performance
-                DB::transaction(function () use ($votesToInsert) {
-                    // Using insertOrIgnore to avoid duplicate votes if the user refreshes
-                    // This assumes a unique constraint or primary key on (voter_id, position_id, candidate_id)
-                    // If no unique constraint exists, it will still be faster than updateOrInsert in a loop.
-                    DB::table('voting_results')->insertOrIgnore($votesToInsert);
-                });
-
-                return response([
-                    'success' => 'Your vote has been casted. Please restart the page!'
-                ], 201);
             }
         }
 
