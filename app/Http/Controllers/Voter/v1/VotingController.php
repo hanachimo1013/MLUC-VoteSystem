@@ -56,18 +56,32 @@ class VotingController extends Controller
     {
         $data = $request->all();
 
-        if ($data) {
-            // Fetch candidates to avoid N+1 query problem
-            $candidates = DB::table('candidate_models')->whereIn('id', $data)->get();
+        if (!$data == null) {
             $userId = Auth::id();
 
-            foreach($candidates as $candidate) {
-                DB::table('voting_results')->updateOrInsert([
-                    'voter_id' => $userId,
-                    'position_id' => $candidate->position_id,
-                    'candidate_id' => $candidate->id,
-                    'election_id' => $candidate->election_id
-                ]);
+            // Bulk fetch candidate information with explicit joins to mirror UtilityElection logic precisely.
+            $candidates = DB::table('candidate_models')
+                ->join('position_models', 'candidate_models.position_id', '=', 'position_models.id')
+                ->join('election_models', 'candidate_models.election_id', '=', 'election_models.id')
+                ->whereIn('candidate_models.id', $data)
+                ->select(
+                    'candidate_models.id',
+                    'position_models.id as position_id',
+                    'election_models.id as election_id'
+                )
+                ->get()
+                ->keyBy('id');
+
+            foreach($data as $data1) {
+                if ($candidates->has($data1)) {
+                    $candidate = $candidates->get($data1);
+                    DB::table('voting_results')->updateOrInsert([
+                        'voter_id' => $userId,
+                        'position_id' => $candidate->position_id,
+                        'candidate_id' => $data1,
+                        'election_id' => $candidate->election_id
+                    ]);
+                }
             }
             return response([
                 'success' => 'Your vote has been casted. Please restart the page!'
