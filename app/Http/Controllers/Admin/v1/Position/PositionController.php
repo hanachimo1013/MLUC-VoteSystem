@@ -14,7 +14,7 @@ class PositionController extends Controller
         $data = DB::table('position_models')
             ->get();
 
-        if (!$data == null) {
+        if ($data) {
 
             return response([
                 'success' => $data
@@ -29,7 +29,7 @@ class PositionController extends Controller
     {
         $data = $request->only('id');
 
-        if (!$data == null) {
+        if ($data) {
             try {
                 DB::table('position_models')
                     ->where('id', $data['id'])

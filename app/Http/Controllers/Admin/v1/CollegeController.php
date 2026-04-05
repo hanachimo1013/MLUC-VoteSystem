@@ -13,7 +13,7 @@ class CollegeController extends Controller
     {
         $data = CollegesModel::all();
 
-        if (!$data == null) {
+        if ($data) {
             return response([
                 'success' => $data,
             ], 200);
@@ -28,7 +28,7 @@ class CollegeController extends Controller
     {
         $data = $request->all();
 
-        if (!$data == null) {
+        if ($data) {
             DB::table('colleges_models')->insert([
                 'coll_name' => $data['coll_name'],
                 'initials' => $data['initials']
@@ -53,7 +53,7 @@ class CollegeController extends Controller
             ->orderBy('registered', 'asc')
             ->get();
 
-        if (!$data == null) {
+        if ($data) {
             return response([
                 'success' => $data,
             ], 200);
@@ -67,7 +67,7 @@ class CollegeController extends Controller
     public function deleteCollegeRecord(Request $request){
         $data = $request->all();
 
-        if(!$data == null){
+        if ($data){
             DB::table('colleges_models')
                 ->where('id',$data['id'])
                 ->delete();

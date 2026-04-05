@@ -22,7 +22,7 @@ class CandidateControllers extends Controller
             ->get();
 
         try {
-            if (!$data == null) {
+            if ($data) {
                 return response([
                     'success' => $data
                 ], 200);
@@ -60,7 +60,7 @@ class CandidateControllers extends Controller
         $request->merge(['image' => $name]);
 
         try {
-            if (!$request == null) {
+            if ($request) {
                 DB::table('candidate_models')->insert([
                     'lname' => $request->lname,
                     'fname' => $request->fname,
@@ -95,7 +95,7 @@ class CandidateControllers extends Controller
             ->where('id', '===', $data['id'])
             ->get();
 
-        if (!$data == null) {
+        if ($data) {
             try {
                 if ($testIf) {
                     DB::table('candidate_models')

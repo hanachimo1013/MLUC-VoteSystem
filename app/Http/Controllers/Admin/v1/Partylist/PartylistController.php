@@ -13,7 +13,7 @@ class PartylistController extends Controller
     public function index(){
         $data = PartylistModel::all();
 
-        if(!$data==null){
+        if ($data){
             try{
                 return response([
                     'success'=>$data
@@ -32,7 +32,7 @@ class PartylistController extends Controller
     public function createPartylist(Request $request){
         $data = $request->only('name');
 
-        if(!$data==null){
+        if ($data){
             try{
                 DB::table('partylist_models')->insert([
                     'party_name'=>$data['name'],
@@ -54,7 +54,7 @@ class PartylistController extends Controller
     public function deletePartylist(Request $request){
         $data = $request->only('id');
 
-        if(!$data == null){
+        if ($data){
             try{
                 DB::table('partylist_models')
                     ->where('id',$data['id'])
