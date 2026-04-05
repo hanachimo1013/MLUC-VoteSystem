@@ -56,13 +56,17 @@ class VotingController extends Controller
     {
         $data = $request->all();
 
-        if (!$data == null) {
-            foreach($data as $data1) {
+        if ($data) {
+            // Fetch candidates to avoid N+1 query problem
+            $candidates = DB::table('candidate_models')->whereIn('id', $data)->get();
+            $userId = Auth::id();
+
+            foreach($candidates as $candidate) {
                 DB::table('voting_results')->updateOrInsert([
-                    'voter_id' => Auth::id(),
-                    'position_id' => UtilityElection::getPositionInElections($data1),
-                    'candidate_id' => $data1,
-                    'election_id' => UtilityElection::getCurrentElections($data1)
+                    'voter_id' => $userId,
+                    'position_id' => $candidate->position_id,
+                    'candidate_id' => $candidate->id,
+                    'election_id' => $candidate->election_id
                 ]);
             }
             return response([

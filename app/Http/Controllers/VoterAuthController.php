@@ -59,12 +59,12 @@ class VoterAuthController extends Controller
             ->where('idNum', $data['idNum'])
             ->first();
 
-        if (!$preRegVoter == null) {
+        if ($preRegVoter) {
             DB::table('voter_acct_models')->insert([
                 'idNum' => $data['idNum'],
                 'email' => $data['email'],
-                'fname' => DB::table('voter_models')->where('idNum', $data['idNum'])->value('fname'),
-                'lname' => DB::table('voter_models')->where('idNum', $data['idNum'])->value('lname'),
+                'fname' => $preRegVoter->fname,
+                'lname' => $preRegVoter->lname,
                 'college_init' => $data['college_init'],
                 'password' => bcrypt($data['password'])
             ]);
@@ -96,7 +96,7 @@ class VoterAuthController extends Controller
     {
         $voter = DB::table('voter_acct_models')->where('idNum', $idNum)->first();
 
-        if ($voter == null) {
+        if (!$voter) {
             return response([
                 'error' => 'This student ID is not existing from the origin server!'
             ], 422);

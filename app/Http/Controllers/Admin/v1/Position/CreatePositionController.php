@@ -17,7 +17,7 @@ class CreatePositionController extends Controller
             'name' => ['required']
         ]);
 
-        if (!$data == null) {
+        if ($data) {
             try {
                 DB::table('position_models')
                     ->insert([

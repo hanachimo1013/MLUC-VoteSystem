@@ -16,7 +16,7 @@ class VoterMgmtController extends Controller
     {
         $voter = DB::table('voter_models')->where('idNum',$idNum)->first();
 
-        if ($voter == null) {
+        if (!$voter) {
             return response([
                 'errors' => 'This student ID is not existing from the origin server!'
             ],404);
@@ -32,7 +32,7 @@ class VoterMgmtController extends Controller
     {
         $voterInfo = VoterAcctModel::all();
 
-        if ($voterInfo == null) {
+        if (!$voterInfo) {
             return response([
                 'error' => 'No registered voters!'
             ], 422);
@@ -53,8 +53,8 @@ class VoterMgmtController extends Controller
             'password' => ['required']
         ]);
 
-        if (!$data == null) {
-            if(!UtilityElection::findVoter($data['idNum']) == null){
+        if ($data) {
+            if (UtilityElection::findVoter($data['idNum'])){
                 DB::table('voter_models')
                     ->upsert([
                         [
@@ -84,7 +84,7 @@ class VoterMgmtController extends Controller
     public function deleteVoterData(Request $request){
         $data = $request->all();
 
-        if(!$data==null){
+        if ($data){
             DB::table('voter_acct_models')
                 ->where('id',$data['id'])
                 ->delete();

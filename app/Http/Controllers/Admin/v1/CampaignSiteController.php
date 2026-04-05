@@ -25,7 +25,7 @@ class CampaignSiteController extends Controller
             ->get();
 
         try {
-            if (!$data == null) {
+            if ($data) {
                 return response([
                     'title' => $header,
                     'data'=> $data
