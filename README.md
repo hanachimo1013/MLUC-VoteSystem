@@ -1,39 +1,98 @@
 # MLUC-VoteSystem
 
-About a voting system which uses Laravel 8 + Vuejs + Tailwindcss developed for Don Mariano Marcos Memorial State
-University - Mid La Union Campus with the team spearheaded by ScriptycaLiSA (Montizon, Jake G.), CRULCOUNT (Abuan,
-Alflorence), and Steven Sevilla with others.
+A comprehensive voting system developed for **Don Mariano Marcos Memorial State University - Mid La Union Campus**.
 
-### Steps in setting up this repository in your local environment:
+## 👥 Team & Credits
 
-- Step 1:
-    - Check if php is installed in the local machine. If it's not installed yet, kindly refer
-      to [PHP Website](https://www.php.net/downloads.php) and set-up PHP in environment variables (PATH).
-- Step 2:
-    - Make sure you have installed Composer. If it's not installed, run this code in your command shell (preferred to
-      use PowerShell):
+This project was developed by an incredible team, spearheaded by:
+*   **ScriptycaLiSA** (Montizon, Jake G.)
+*   **CRULCOUNT** (Abuan, Alflorence)
+*   **Steven Sevilla**
+*   ...and other valuable contributors.
 
-```
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-php composer-setup.php
-php -r "unlink('composer-setup.php');"
-```
+## 🚀 Tech Stack
 
-- Step 3:
-    - Run `composer install` in the root directory of this repository in order to install Laravel dependencies indicated
-      in composer.phar.
-- Step 4:
-    - Make sure that Node.js is installed in the local machine in order to make working Laravel and Vue.js dependencies,
-      which is indicated in package.json. After that, run `node -v` and `npm -v` in command shell to check if it's
-      installed.
-- Step 5:
-    - To install dependencies from package.json (which contains node_modules), run `npm install && npm run dev` 2 times
-      in root folder using PowerShell and run the same code in vue folder (`rootfolder/vue`).
-- Step 6:
-    - Import db_export.sql in local database server (HeidiSQL, SQLYog, etc).
-- Step 7:
-    - Run `php artisan serve` using PowerShell in root folder (Laravel) to make the backend work and `npm run dev` in
-      vue folder (`rootfolder/vue`) to make Vue.js frontend work.
-- Step 8:
-    - Check the URL displayed in Vue.js shell to show it to the browser. Enjoy :))
+*   **Backend:** [Laravel 8](https://laravel.com/)
+*   **Frontend:** [Vue.js 3](https://vuejs.org/)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/)
+*   **Build Tools:** Laravel Mix (Root) & Vite (`vue/` directory)
+
+## 📋 Prerequisites
+
+Before you begin, ensure you have the following installed on your local machine:
+*   **PHP** (>= 7.3 or 8.x): [Download PHP](https://www.php.net/downloads.php) and ensure it's added to your system's PATH variable.
+*   **Composer**: [Download Composer](https://getcomposer.org/download/) for managing PHP dependencies.
+*   **Node.js & npm**: [Download Node.js](https://nodejs.org/) to manage frontend packages.
+*   **Local Database Server**: e.g., MySQL/MariaDB via XAMPP, Laragon, HeidiSQL, or SQLYog.
+
+## 🛠️ Installation & Setup
+
+Follow these steps to set up the repository in your local environment:
+
+### 1. Backend Setup (Laravel)
+
+1.  **Clone the repository** (if you haven't already).
+2.  Navigate to the root directory and install PHP dependencies:
+    ```bash
+    composer update
+    ```
+    *(Note: Using `composer update` is recommended here over `install` to resolve specific PHP version incompatibilities.)*
+3.  Set up your environment variables:
+    ```bash
+    cp .env.example .env
+    ```
+    *Open the `.env` file and ensure `APP_ENV=local`. Update your `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` to match your local database settings.*
+4.  Generate the application key:
+    ```bash
+    php artisan key:generate --force
+    ```
+
+### 2. Frontend Setup (Vue.js)
+
+The project utilizes two separate frontend package configurations (Root and `vue/` directory).
+
+1.  **Root Directory Packages:**
+    Run the following in the project's root folder:
+    ```bash
+    npm install
+    npm run dev
+    ```
+    *(You may need to run `npm run dev` twice to fully compile initial mix assets.)*
+
+2.  **Vue Directory Packages:**
+    Navigate to the `vue` folder and install dependencies:
+    ```bash
+    cd vue
+    npm install
+    ```
+
+### 3. Database Setup
+
+1.  Create a new database in your local SQL server matching your `.env` configuration.
+2.  Import the provided SQL dump files located in the root directory (e.g., `db_export.sql`, `db_colleges_export.sql`, `db_preregvoter_export.sql`) into your newly created database.
+
+## 💻 Running the Application
+
+To run the application locally, you will need to start both the Laravel development server and the Vite development server.
+
+1.  **Start the Backend Server:**
+    Open a terminal in the root directory and run:
+    ```bash
+    php artisan serve
+    ```
+    This will typically start the server at `http://127.0.0.1:8000`.
+
+2.  **Start the Frontend Server:**
+    Open a new, separate terminal, navigate to the `vue` folder, and start Vite:
+    ```bash
+    cd vue
+    npm run dev
+    ```
+3.  **Access the App:**
+    Check the terminal running your Vue server for the local URL (usually `http://localhost:3000` or similar). Open this URL in your browser to access the system. Enjoy! :))
+
+## 📄 License
+
+This project is licensed under the **MIT License**.
+
+Copyright (c) 2022 Jake Montizon. See the `LICENSE` file for more details.
