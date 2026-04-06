@@ -50,7 +50,7 @@ class CandidateControllers extends Controller
             'election_id' => 'required',
             'partylist_id' => 'required',
             'position_id' => 'required',
-            'image' => 'required|mimes:jpg,jpeg,png,gif,svg|max:5120',
+            'image' => 'required|mimes:jpg,jpeg,png,gif|max:5120',
             'description' => 'required|string'
         ]);
 
