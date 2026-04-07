@@ -62,7 +62,7 @@ class SystemServerRecordController extends Controller
 
     public function archiveData(Request $request){
         $data = $request->validate([
-            'file' => 'required|max:30720'
+            'file' => 'required|mimes:csv,txt|max:30720'
         ]);
 
         if ($request->file('file')) {
