@@ -72,16 +72,29 @@ class VotingController extends Controller
                 ->get()
                 ->keyBy('id');
 
-            foreach($data as $data1) {
-                if ($candidates->has($data1)) {
+            $existingCandidateIds = DB::table('voting_results')
+                ->where('voter_id', $userId)
+                ->whereIn('candidate_id', $data)
+                ->pluck('candidate_id')
+                ->toArray();
+
+            $insertData = [];
+
+            foreach ($data as $data1) {
+                if ($candidates->has($data1) && !in_array($data1, $existingCandidateIds)) {
                     $candidate = $candidates->get($data1);
-                    DB::table('voting_results')->updateOrInsert([
+                    $insertData[] = [
                         'voter_id' => $userId,
                         'position_id' => $candidate->position_id,
                         'candidate_id' => $data1,
                         'election_id' => $candidate->election_id
-                    ]);
+                    ];
+                    $existingCandidateIds[] = $data1; // Prevent inserting duplicates if $data has duplicate IDs
                 }
+            }
+
+            if (!empty($insertData)) {
+                DB::table('voting_results')->insert($insertData);
             }
         }
 
